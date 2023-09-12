@@ -30,7 +30,7 @@ public class RestController {
     private String getWhether(@RequestParam("selectedCity") String city) throws Exception {
         WeatherData weather=webServiceClientImlp.getWhether(city);
         System.out.println(weather.getTemp());
-        return "<h1>Hello</h1>";
+        return "redirect:/whether/home";
     }
 
 }
