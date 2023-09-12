@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Cities</title>
+    <!-- Add Bootstrap CSS link -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <form th:action="@{/whether/api}" action="#" method="post">
+    <div class="form-group">
+        <label for="citySelect">Select a City in India:</label>
+        <select class="form-control" id="citySelect" name="selectedCity">
+            <option th:each="city : ${cities}" th:value="${city}" th:text="${city}"></option>
+        </select>
+    </div>
+        <div class="row justify-content-center"> <!-- Center the button -->
+            <div class="col-md-3">
+                <input type="submit" class="btn mb-2 mb-md-0 btn-secondary btn-block btn-round" value="Submit">
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Add Bootstrap JS and jQuery (required for Bootstrap) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
