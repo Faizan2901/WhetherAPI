@@ -22,14 +22,14 @@ public class RestController {
 
     @GetMapping("/home")
     private String getHomePage(Model model){
-        List<String> cities= Arrays.asList("Delhi", "Mumbai", "Kolkata", "Chennai", "Bengaluru", "Hyderabad");
+        List<String> cities= Arrays.asList("Delhi", "Mumbai", "Kolkata", "Chennai", "Bengaluru", "Hyderabad","Ahmedabad");
         model.addAttribute("cities",cities);
         return "home-page";
     }
     @PostMapping("/api")
     private String getWhether(@RequestParam("selectedCity") String city) throws Exception {
         WeatherData weather=webServiceClientImlp.getWhether(city);
-        System.out.println(weather.getMain().getTemp());
+        System.out.println(weather.getTemp());
         return "<h1>Hello</h1>";
     }
 
