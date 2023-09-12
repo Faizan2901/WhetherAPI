@@ -11,6 +11,12 @@ public class ApplicationProperties {
     @Value("${whether.openapi}")
     private String openWhetherAPI;
 
+    @Value("${webservice.httpConnection.timeout}")
+    private int	httpConnectionTimeOut;
+
+    @Value("${webservice.httpSocket.timeout}")
+    private int	httpSocketTimeOut;
+
     public int getHttpConnectionTimeOut() {
         return httpConnectionTimeOut;
     }
@@ -19,8 +25,6 @@ public class ApplicationProperties {
         this.httpConnectionTimeOut = httpConnectionTimeOut;
     }
 
-    @Value("${webservice.httpConnection.timeout}")
-    private int	httpConnectionTimeOut;
     public String getOpenWhetherAPI() {
         return openWhetherAPI;
     }
@@ -32,7 +36,4 @@ public class ApplicationProperties {
     public void setHttpSocketTimeOut(int httpSocketTimeOut) {
         this.httpSocketTimeOut = httpSocketTimeOut;
     }
-
-    @Value("${webservice.httpSocket.timeout}")
-    private int	httpSocketTimeOut;
 }
