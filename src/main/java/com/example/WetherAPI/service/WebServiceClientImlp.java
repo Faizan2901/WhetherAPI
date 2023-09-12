@@ -1,6 +1,6 @@
 package com.example.WetherAPI.service;
 
-import com.example.WetherAPI.bean.WhetherBean;
+import com.example.WetherAPI.bean.WeatherData;
 import com.example.WetherAPI.config.ApplicationProperties;
 import jakarta.annotation.PostConstruct;
 import org.apache.http.HttpResponse;
@@ -11,14 +11,14 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -37,20 +37,21 @@ public class WebServiceClientImlp {
     private int	httpConnectionTimeOut;
     private int	httpSocketTimeOut;
 
+    private ObjectMapper mapper=new ObjectMapper();
     @PostConstruct
     private void init()
     {
         httpConnectionTimeOut = applicationProperties.getHttpConnectionTimeOut();
         httpSocketTimeOut = applicationProperties.getHttpSocketTimeOut();
-        // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
-    public void getWhether(String city) throws URISyntaxException, IOException {
+    public WeatherData getWhether(String city) throws URISyntaxException, IOException, ParseException {
 
         createConnection();
 
         List<NameValuePair> postParamList=new ArrayList<>();
         postParamList.add(new BasicNameValuePair("q",city));
         postParamList.add(new BasicNameValuePair("appid","4e9b7581048d460728ab9204d555c218"));
+        postParamList.add(new BasicNameValuePair("units","metric"));
 
         String whetherAPI= applicationProperties.getOpenWhetherAPI();
 
@@ -66,25 +67,16 @@ public class WebServiceClientImlp {
         httpResponse=client.execute(request);
 
         InputStream inputStream=httpResponse.getEntity().getContent();
-
-        BufferedReader br=new BufferedReader(new InputStreamReader(inputStream));
-
-        StringBuilder stringBuilder=new StringBuilder();
-
-        String line="";
-
-        while((line= br.readLine())!=null){
-            stringBuilder.append(line);
-        }
-
-        br.close();
+        Object obj = new JSONParser().parse(new InputStreamReader(inputStream));
+        JSONObject jo = (JSONObject) obj;
         inputStream.close();
 
-        String nstr=stringBuilder.toString();
+        String mainJsonString=jo.get("main").toString();
 
-        System.out.println(nstr);
 
-//        return new WhetherBean();
+        WeatherData weatherData=mapper.readValue(mainJsonString, WeatherData.class);
+
+        return weatherData;
     }
 
     private void createConnection()
