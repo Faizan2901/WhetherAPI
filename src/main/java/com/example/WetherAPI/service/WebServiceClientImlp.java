@@ -68,10 +68,10 @@ public class WebServiceClientImlp {
 
         InputStream inputStream=httpResponse.getEntity().getContent();
         Object obj = new JSONParser().parse(new InputStreamReader(inputStream));
-        JSONObject jo = (JSONObject) obj;
+        JSONObject jsonObject = (JSONObject) obj;
         inputStream.close();
 
-        String mainJsonString=jo.get("main").toString();
+        String mainJsonString=jsonObject.get("main").toString();
 
 
         WeatherData weatherData=mapper.readValue(mainJsonString, WeatherData.class);
