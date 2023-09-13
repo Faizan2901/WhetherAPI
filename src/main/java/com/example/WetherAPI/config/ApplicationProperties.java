@@ -2,10 +2,12 @@ package com.example.WetherAPI.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
+@PropertySource(ignoreResourceNotFound = true, value = "classpath:application.properties")
 public class ApplicationProperties {
 
     @Value("${whether.openapi}")
