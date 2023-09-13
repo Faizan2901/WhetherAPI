@@ -27,62 +27,65 @@ import java.util.List;
 @Service
 public class WebServiceClientImlp {
 
-    @Autowired
-    private ApplicationProperties applicationProperties;
+	@Autowired
+	private ApplicationProperties applicationProperties;
 
-    private HttpResponse httpResponse=null;
+	private HttpResponse httpResponse = null;
 
-    private CloseableHttpClient client= null;
+	private CloseableHttpClient client = null;
 
-    private int	httpConnectionTimeOut;
-    private int	httpSocketTimeOut;
+	private int httpConnectionTimeOut;
+	private int httpSocketTimeOut;
 
-    private ObjectMapper mapper=new ObjectMapper();
-    @PostConstruct
-    private void init()
-    {
-        httpConnectionTimeOut = applicationProperties.getHttpConnectionTimeOut();
-        httpSocketTimeOut = applicationProperties.getHttpSocketTimeOut();
-    }
-    public WeatherData getWhether(String city) throws URISyntaxException, IOException, ParseException {
+	private ObjectMapper mapper = new ObjectMapper();
 
-        createConnection();
+	@PostConstruct
+	private void init() {
+		httpConnectionTimeOut = applicationProperties.getHttpConnectionTimeOut();
+		httpSocketTimeOut = applicationProperties.getHttpSocketTimeOut();
+	}
 
-        List<NameValuePair> postParamList=new ArrayList<>();
-        postParamList.add(new BasicNameValuePair("q",city));
-        postParamList.add(new BasicNameValuePair("appid","4e9b7581048d460728ab9204d555c218"));
-        postParamList.add(new BasicNameValuePair("units","metric"));
+	public WeatherData getWhether(String city) throws URISyntaxException, IOException, ParseException {
 
-        String whetherAPI= applicationProperties.getOpenWhetherAPI();
+		createConnection();
 
-        HttpGet request =new HttpGet(whetherAPI);
-        URIBuilder uriWithParams = new URIBuilder(request.getURI());
-        for(NameValuePair pair:postParamList)
-        {
-                uriWithParams.addParameter(pair.getName(), pair.getValue());
-        }
+		WeatherData weatherData = null;
+		
+		List<NameValuePair> postParamList = new ArrayList<>();
+		postParamList.add(new BasicNameValuePair("q", city));
+		postParamList.add(new BasicNameValuePair("appid", "4e9b7581048d460728ab9204d555c218"));
+		postParamList.add(new BasicNameValuePair("units", "metric"));
 
-        URI uri=uriWithParams.build();
-        request.setURI(uri);
-        httpResponse=client.execute(request);
+		String whetherAPI = applicationProperties.getOpenWhetherAPI();
 
-        InputStream inputStream=httpResponse.getEntity().getContent();
-        Object obj = new JSONParser().parse(new InputStreamReader(inputStream));
-        JSONObject jsonObject = (JSONObject) obj;
-        inputStream.close();
+		HttpGet request = new HttpGet(whetherAPI);
+		URIBuilder uriWithParams = new URIBuilder(request.getURI());
+		for (NameValuePair pair : postParamList) {
+			uriWithParams.addParameter(pair.getName(), pair.getValue());
+		}
 
-        String mainJsonString=jsonObject.get("main").toString();
+		URI uri = uriWithParams.build();
+		request.setURI(uri);
+		httpResponse = client.execute(request);
 
+		InputStream inputStream = httpResponse.getEntity().getContent();
+		Object obj = new JSONParser().parse(new InputStreamReader(inputStream));
 
-        WeatherData weatherData=mapper.readValue(mainJsonString, WeatherData.class);
+			JSONObject jsonObject = (JSONObject) obj;
+			inputStream.close();
 
-        return weatherData;
-    }
+			if(jsonObject.containsKey("message")) {
+				return weatherData;
+			}
+			String mainJsonString = jsonObject.get("main").toString();
+			weatherData = mapper.readValue(mainJsonString, WeatherData.class);
 
-    private void createConnection()
-    {
-        // client = HttpClientBuilder.create().build();
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(httpConnectionTimeOut).setSocketTimeout(httpSocketTimeOut).build();
-        client = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
-    }
+		return weatherData;
+	}
+
+	private void createConnection() {
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(httpConnectionTimeOut)
+				.setSocketTimeout(httpSocketTimeOut).build();
+		client = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
+	}
 }

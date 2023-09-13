@@ -1,30 +1,71 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indian Cities</title>
-    <!-- Add Bootstrap CSS link -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Cities</title>
+<!-- Add Bootstrap CSS link -->
+<link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    rel="stylesheet">
+
+<!-- Custom CSS -->
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        margin-top: 50px;
+    }
+
+    .form-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+</style>
 </head>
 <body>
-<div class="container mt-5">
-    <form th:action="@{/weather/api}" action="#" method="post">
-    <div class="form-group">
-        <label for="citySelect">Select a City in India:</label>
-        <select class="form-control" id="citySelect" name="selectedCity">
-            <option th:each="city : ${cities}" th:value="${city}" th:text="${city}"></option>
-        </select>
-    </div>
-        <div class="row justify-content-center"> <!-- Center the button -->
-            <div class="col-md-3">
-                <input type="submit" class="btn mb-2 mb-md-0 btn-secondary btn-block btn-round" value="Submit">
-            </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 form-container">
+            <h2 class="text-center mb-4">Weather Information</h2>
+            <form th:action="@{/weather/api}" action="#" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="cityInput" placeholder="Enter City" name="selectedCity">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-custom btn-block">Show Weather</button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
-
+<script th:if="${isNull}">
+    // This script will execute if someCondition is true
+    alert("Please enter valid city name!");
+    // Add your script code here
+</script>
 <!-- Add Bootstrap JS and jQuery (required for Bootstrap) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
