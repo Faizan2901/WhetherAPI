@@ -74,11 +74,11 @@ public class WebServiceClientImlp {
 			JSONObject jsonObject = (JSONObject) obj;
 			inputStream.close();
 
-			if(jsonObject.containsKey("message")) {
-				return weatherData;
+			if(jsonObject.containsKey("main")) {
+				String mainJsonString = jsonObject.get("main").toString();
+				weatherData = mapper.readValue(mainJsonString, WeatherData.class);
 			}
-			String mainJsonString = jsonObject.get("main").toString();
-			weatherData = mapper.readValue(mainJsonString, WeatherData.class);
+			
 
 		return weatherData;
 	}
